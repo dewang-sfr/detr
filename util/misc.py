@@ -422,8 +422,12 @@ def init_distributed_mode(args):
     args.dist_backend = 'nccl'
     print('| distributed init (rank {}): {}'.format(
         args.rank, args.dist_url), flush=True)
+    # fix the address in use error due to that the launch script will create the world_size and rank automatically
     torch.distributed.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
-                                         world_size=args.world_size, rank=args.rank)
+                                         )
+    #torch.distributed.init_process_group(backend=args.dist_backend, init_method="env://")
+    #torch.distributed.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
+    #                                     world_size=args.world_size, rank=args.rank)
     torch.distributed.barrier()
     setup_for_distributed(args.rank == 0)
 
